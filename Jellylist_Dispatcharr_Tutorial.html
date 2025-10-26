@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jellylist, VLC, and Dispatcharr Setup Tutorial (v4)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #3f51b5;
+            border-bottom: 2px solid #3f51b5;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #5c6bc0;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #7986cb;
+            margin-top: 20px;
+        }
+        code, pre {
+            background-color: #e8eaf6;
+            padding: 5px;
+            border-radius: 4px;
+            overflow-x: auto;
+            display: block;
+        }
+        .step {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #c5cae9;
+            border-left: 5px solid #3f51b5;
+            background-color: #ffffff;
+        }
+        .tip, .warning {
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .warning {
+            background-color: #ffcdd2;
+            border-left: 5px solid #d32f2f;
+            color: #c62828;
+        }
+        .tip {
+            background-color: #c8e6c9;
+            border-left: 5px solid #4caf50;
+            color: #388e3c;
+        }
+        strong {
+            color: #3f51b5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Jellylist, VLC, and Dispatcharr Setup Tutorial</h1>
+
+    <p>This tutorial covers how to set up and use Jellylist to generate M3U playlists for your Jellyfin content, enabling playback in external players like VLC or integration into streaming management tools like Dispatcharr.</p>
+
+    <hr>
+
+    <h2>Part 1: Authentication Setup (Jellyfin API Key)</h2>
+
+    <div class="step">
+        <h3>1. Create the Jellyfin API Key (Required)</h3>
+        <p>Jellylist needs an API key to securely access your media server. This is the **most secure** authentication method.</p>
+        <ol>
+            <li>Log in to your **Jellyfin Web Interface** (e.g., at <code>[YOUR_JELLYFIN_URL]</code>).</li>
+            <li>Go to **Dashboard** (Settings) $\rightarrow$ **API Keys**.</li>
+            <li>Click the **`+` (New API Key)** button.</li>
+            <li>In the dialog box:
+                <ul>
+                    <li>**App Name:** Enter a descriptive name like `Jellylist`.</li>
+                    <li>Click **OK**.</li>
+                </ul>
+            </li>
+            <li>**Crucially:** Copy the **generated API Key** immediately. This is the only time you will see the full key. Save it temporarily in a secure place.</li>
+            <li>Ensure the user linked to this key has **Download** permissions for the media you wish to stream.</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <h2>Part 2: Running Jellylist Server</h2>
+
+    <div class="step">
+        <h3>2. Prerequisites and Download</h3>
+        <ul>
+            <li><strong>Software:</strong> Install the **.NET 7 Runtime** on the machine where you will run Jellylist.</li>
+            <li><strong>Jellylist:</strong> <a href="https://github.com/thepwrtank18/Jellylist/releases" target="_blank">Download the latest release</a> and unzip the contents to a convenient folder.</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>3. Run the Jellylist Server Executable</h3>
+        <p>You must run the executable from your terminal, specifying the local address for Jellylist and the URL for your Jellyfin server.</p>
+        <ol>
+            <li>Open a terminal (e.g., **Windows PowerShell**) in the directory where you unzipped the Jellylist files.</li>
+            <li>Execute the following command, replacing <code>[YOUR_JELLYFIN_URL]</code>:</li>
+        </ol>
+
+        <pre><code>.\Jellylist.exe --urls http://localhost:5000 --jellyfinUrl [YOUR_JELLYFIN_URL]</code></pre>
+        <ul>
+            <li><strong><code>http://localhost:5000</code>:</strong> This is the local address where Jellylist runs.</li>
+            <li><strong><code>[YOUR_JELLYFIN_URL]</code>:</strong> Replace this with the full address of your Jellyfin server (e.g., <code>http://192.168.1.10:8096</code>).</li>
+        </ul>
+        <div class="tip">
+            <strong>Keep the Terminal Open:</strong> The Jellylist application must remain running in this terminal window for the stream links to work.
+        </div>
+    </div>
+
+    <hr>
+
+    <h2>Part 3: Generating the Playlist URL</h2>
+
+    <div class="step">
+        <h3>4. Find the Media ID</h3>
+        <p>The ID is a unique string that identifies the show or album you want to play.</p>
+        <ol>
+            <li>In your Jellyfin web interface, navigate to the detail page of the TV show or Album.</li>
+            <li>The ID is the long string of characters in the browser's URL bar, found immediately after <code>id=</code>.</li>
+        </ol>
+        <pre><code>Example URL: .../details?id=<strong>[YOUR_SERIES_OR_ALBUM_ID]</strong></code></pre>
+    </div>
+
+    <div class="step">
+        <h3>5. Construct the Complete Stream URL and Examples</h3>
+        <p>Combine the Jellylist address, the media ID, and your API key to create the final streaming URL.</p>
+
+        <h4>General Structure (Use for Copy/Paste)</h4>
+        <p><strong>For a TV Show:</strong></p>
+        <pre><code>http://localhost:5000/GetTV?seriesId=[YOUR_SERIES_ID]&authToken=[YOUR_API_KEY]</code></pre>
+        <p><strong>For an Album:</strong></p>
+        <pre><code>http://localhost:5000/GetAlbum?albumId=[YOUR_ALBUM_ID]&authToken=[YOUR_API_KEY]</code></pre>
+
+        <h4>Example Links (What they should look like)</h4>
+        <p>Assume your API Key is `a1b2c3d4e5f6g7h8` and your Series ID is `99c0d1e2f3a4b5c6`:</p>
+        <p><strong>TV Show Example:</strong></p>
+        <pre><code>http://localhost:5000/GetTV?seriesId=99c0d1e2f3a4b5c6&authToken=a1b2c3d4e5f6g7h8</code></pre>
+        <p><strong>Album Example:</strong></p>
+        <pre><code>http://localhost:5000/GetAlbum?albumId=01d2e3f4a5b6c7d8&authToken=a1b2c3d4e5f6g7h8</code></pre>
+        <div class="warning">
+            **Reminder:** If you choose to use the less secure Username/Password method, replace <code>&authToken=[YOUR_API_KEY]</code> with <code>&username=[USER]&password=[PASS]</code>.
+        </div>
+    </div>
+
+    <div class="step">
+        <h3>6. Optional: Play the Stream in VLC</h3>
+        <ol>
+            <li>**Copy the complete URL** from Step 5.</li>
+            <li>**Open VLC Media Player** (Ctrl+N).</li>
+            <li>Paste the URL into **Media** $\rightarrow$ **Open Network Stream** and click **Play**.</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <h2>Part 4: Using the Jellylist URL in Dispatcharr</h2>
+
+    <p>Dispatcharr can use the Jellylist output as a constant source for a single 'Channel' or 'VOD' entry in its system.</p>
+
+    <div class="step">
+        <h3>7. Add the Jellylist URL as an M3U Provider</h3>
+        <ol>
+            <li>Log in to your **Dispatcharr Web Interface**.</li>
+            <li>Navigate to the section for **M3U Playlists** or **Providers**.</li>
+            <li>Click **Add New M3U Source** (or similar option).</li>
+            <li>
+                **Configuration Details:**
+                <ul>
+                    <li>**Name:** Give it a meaningful name (e.g., `Jellyfin Show - [Series Name]`).</li>
+                    <li>**Type:** Select **URL**.</li>
+                    <li>**Source URL:** **Paste the complete Jellylist URL** (from Step 5, including the Series ID and API Key).</li>
+                    <li>**Refresh:** Set the refresh interval to a reasonable value (e.g., 24 hours), as the content won't change often.</li>
+                </ul>
+            </li>
+            <li>Click **Save** and initiate the **Refresh** process for that new M3U source.</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h3>8. Create a Dispatcharr Channel from the M3U Source</h3>
+        <p>The TV show episodes will now be available under this new M3U Provider in Dispatcharr.</p>
+        <ol>
+            <li>Go to the **Channels** or **Live TV** section of Dispatcharr.</li>
+            <li>**Map** or **Add** the streams that Dispatcharr found from the Jellylist M3U to a new Dispatcharr Channel.</li>
+            <li>Set the **Channel Number** and **Name** in Dispatcharr as you want it to appear in your final client (e.g., Plex/Jellyfin Live TV).</li>
+            <li>You can then use Dispatcharr's output M3U/HDHR functionality to feed this stream into your client of choice.</li>
+        </ol>
+    </div>
+
+    <div class="warning">
+        <h3>⚠️ SECURITY WARNING: NEVER SHARE THESE LINKS ⚠️</h3>
+        <p>The link you use in Dispatcharr contains your private **API Key** or **Username/Password**. This grants full, unexpiring access to your Jellyfin account. **Do not share this link with anyone, especially not in a public forum.**</p>
+    </div>
+
+</body>
+</html>
