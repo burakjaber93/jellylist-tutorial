@@ -1,5 +1,4 @@
-# jellylist-tutorial
-How to Stream Full Jellyfin TV Series/Albums to VLC or Dispatcharr
+# How to Stream Full Jellyfin TV Series/Albums to VLC or Dispatcharr
 
 Hey everyone! I've put together a self-contained HTML tutorial on how to use a fantastic tool called Jellylist. This small program bridges the gap between your Jellyfin server and external media clients that natively support M3U playlists, like VLC or stream managers like Dispatcharr.
 
